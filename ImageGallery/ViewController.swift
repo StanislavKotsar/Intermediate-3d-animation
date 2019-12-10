@@ -52,6 +52,7 @@ class ViewController: UIViewController {
             image.frame = view.bounds
             
             view.addSubview(image)
+            image.didSelect = selectImage
         }
         navigationItem.title = images.last?.title
         var perspective = CATransform3DIdentity
@@ -89,6 +90,36 @@ class ViewController: UIViewController {
             
             imageYOffset += view.frame.height / CGFloat(images.count)
         }
+    }
+    
+    func selectImage(selectedImage: ImageViewCard) {
+
+      for subview in view.subviews {
+        guard let image = subview as? ImageViewCard else {
+          continue
+        }
+        if image === selectedImage {
+          UIView.animate(withDuration: 0.33, delay: 0.0,
+            options: .curveEaseIn,
+            animations: {
+              image.layer.transform = CATransform3DIdentity
+            },
+            completion: {_ in
+              self.view.bringSubviewToFront(image)
+            })
+        } else {
+          UIView.animate(withDuration: 0.33, delay: 0.0,
+            options: .curveEaseIn,
+            animations: {
+              image.alpha = 0.0
+            },
+            completion: {_ in
+              image.alpha = 1.0
+              image.layer.transform = CATransform3DIdentity
+            })
+        }
+      }
+        self.navigationItem.title = selectedImage.title
     }
     
 }
